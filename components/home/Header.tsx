@@ -20,7 +20,7 @@ const NavLink = ({
 
 export default function Header() {
     return (
-        <nav className="container flex items-center justify-between px-8 py-4 mx-auto">
+        <nav className="container flex items-center justify-between px-8 py-4 mx-auto lg:max-w-6xl">
             <div className="flex lg:flex-1">
                 <NavLink href="/">
                     <span className="flex items-center gap-2 shrink-0">

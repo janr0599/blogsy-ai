@@ -24,7 +24,7 @@ export default function RootLayout({
                 className={`${ibmPlexSans.className} antialiased`}
                 suppressHydrationWarning={true}
             >
-                <Header></Header>
+                <Header />
                 <main>{children}</main>
             </body>
         </html>
