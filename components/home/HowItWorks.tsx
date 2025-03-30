@@ -1,8 +1,8 @@
-import { MoveRightIcon } from "lucide-react";
+import { MoveDownIcon, MoveRightIcon } from "lucide-react";
 
 export default function HowItWorks() {
     return (
-        <section className="py-24 relative overflow-hidden m-auto">
+        <section className="py-24 relative overflow-hidden mx-auto">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
@@ -24,7 +24,7 @@ export default function HowItWorks() {
                 Easily repurpose your content into SEO focused blog posts
             </h3>
 
-            <div className="flex items-center justify-center gap-4 lg:gap-24">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-12 lg:gap-24">
                 <div className="flex flex-col gap-4">
                     <p className="text-7xl text-center">📽️</p>
                     <p className="text-center font-medium">
@@ -34,7 +34,12 @@ export default function HowItWorks() {
                 <MoveRightIcon
                     size={48}
                     strokeWidth={0.5}
-                    className="text-purple-500"
+                    className="hidden sm:block text-purple-500"
+                />
+                <MoveDownIcon
+                    size={48}
+                    strokeWidth={0.5}
+                    className="block sm:hidden text-purple-500"
                 />
 
                 <div className="flex flex-col gap-4">
@@ -44,7 +49,12 @@ export default function HowItWorks() {
                 <MoveRightIcon
                     size={48}
                     strokeWidth={0.5}
-                    className="text-purple-500"
+                    className="hidden sm:block text-purple-500"
+                />
+                <MoveDownIcon
+                    size={48}
+                    strokeWidth={0.5}
+                    className="block sm:hidden text-purple-500"
                 />
 
                 <div className="flex flex-col gap-4">

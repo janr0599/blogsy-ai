@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
-import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/home/Header";
+import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
     subsets: ["latin"],
@@ -19,14 +20,16 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body
-                className={`${ibmPlexSans.className} antialiased`}
-                suppressHydrationWarning={true}
-            >
-                <Header />
-                <main>{children}</main>
-            </body>
-        </html>
+        <ClerkProvider>
+            <html lang="en">
+                <body
+                    className={`${ibmPlexSans.className} antialiased`}
+                    suppressHydrationWarning={true}
+                >
+                    <Header />
+                    <main>{children}</main>
+                </body>
+            </html>
+        </ClerkProvider>
     );
 }
