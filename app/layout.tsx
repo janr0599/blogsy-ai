@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/home/Header";
+
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const ibmPlexSans = IBM_Plex_Sans({
     subsets: ["latin"],
@@ -28,6 +30,7 @@ export default function RootLayout({
                 >
                     <Header />
                     <main>{children}</main>
+                    <Toaster richColors />
                 </body>
             </html>
         </ClerkProvider>

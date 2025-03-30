@@ -13,7 +13,7 @@ export async function hasCancelledPlan(
 
 export function getPlanType(priceId: string) {
     const checkPlanType = plans.filter((plan) => plan.priceId === priceId);
-    return checkPlanType?.[0].id || "starter";
+    return checkPlanType?.[0];
 }
 
 export async function updateUser(
