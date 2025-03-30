@@ -2,34 +2,9 @@ import { ArrowRight, CheckIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { plans } from "@/lib/constants";
 
 export default function Pricing() {
-    const plans = [
-        {
-            id: "basic",
-            name: "Basic",
-            description: "Get started with Blogsy",
-            price: "9.99",
-            items: ["3 Blog Posts", "3 Transcriptions"],
-            paymentLink: "https://buy.stripe.com/test_9AQdUSe1GeyGbZu7ss",
-            priceId:
-                process.env.NODE_ENV === "development"
-                    ? "price_1R8M89BpXPPZ8q082M68MGrK"
-                    : "",
-        },
-        {
-            id: "pro",
-            name: "Pro",
-            description: "All blog posts let's go!",
-            price: "19.99",
-            items: ["Unlimited Blog Posts", "Unlimited Transcriptions"],
-            paymentLink: "https://buy.stripe.com/test_6oEaIGg9Ocqy5B63cd",
-            priceId:
-                process.env.NODE_ENV === "development"
-                    ? "price_1R8MBJBpXPPZ8q08O2CwC5vd"
-                    : "",
-        },
-    ];
     return (
         <section className="relative overflow-hidden" id="pricing">
             <div className="py-12 lg:py-24 max-w-6xl mx-auto px-12 lg:px-0">
