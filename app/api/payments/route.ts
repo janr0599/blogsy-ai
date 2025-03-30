@@ -1,7 +1,7 @@
-// import {
-//     handleCheckoutSessionCompleted,
-//     handleSubscriptionDeleted,
-// } from "@/lib/payment-helpers";
+import {
+    handleCheckoutSessionCompleted,
+    handleSubscriptionDeleted,
+} from "@/lib/payment-helpers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
                 console.log({ session });
 
                 //connect to the db create or update user
-                // await handleCheckoutSessionCompleted({ session, stripe });
+                await handleCheckoutSessionCompleted({ session, stripe });
                 break;
             }
             case "customer.subscription.deleted": {
@@ -44,7 +44,9 @@ export async function POST(req: NextRequest) {
                     subscriptionId
                 );
 
-                // await handleSubscriptionDeleted({ subscriptionId, stripe });
+                console.log({ subscription });
+
+                await handleSubscriptionDeleted({ subscriptionId, stripe });
                 break;
             }
             default:
