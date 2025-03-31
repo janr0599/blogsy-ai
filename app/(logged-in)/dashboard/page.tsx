@@ -57,7 +57,7 @@ export default async function Dashboard() {
                         magic
                     </p>
 
-                    <p className="mt-2 text-lg sm:text-xl text-gray-600 max-w-2xl text-center leading-8">
+                    <p className="mt-2 text-lg text-gray-600 max-w-2xl text-center leading-8">
                         You get{" "}
                         <span className="font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded">
                             {isBasicPlan ? "3" : "Unlimited"} blog posts

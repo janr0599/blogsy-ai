@@ -14,6 +14,12 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
     title: "Blogsy AI",
     description: "Turn your words into captivating blog posts",
+    icons: {
+        icon: "/icon.ico",
+        shortcut: "/icon.ico",
+        apple: "/icon.ico",
+    },
+    metadataBase: new URL("https://blogsy-ai.vercel.app"),
 };
 
 export default function RootLayout({
@@ -30,7 +36,7 @@ export default function RootLayout({
                 >
                     <Header />
                     <main>{children}</main>
-                    <Toaster richColors />
+                    <Toaster richColors position="top-right" />
                 </body>
             </html>
         </ClerkProvider>

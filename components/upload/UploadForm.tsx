@@ -9,13 +9,15 @@ import {
     generateBlogPostAction,
     transcribeUploadedFile,
 } from "@/actions/upload-actions";
+import { useFormStatus } from "react-dom";
+import { Loader2, UploadCloud } from "lucide-react";
 
 const schema = z.object({
     file: z
         .instanceof(File, { message: "Invalid file" })
         .refine(
-            (file: File) => file.size <= 20 * 1024 * 1024,
-            "File size must not exceed 20MB"
+            (file: File) => file.size <= 500 * 1024 * 1024,
+            "File size must not exceed 5GB"
         )
         .refine(
             (file: File) =>
@@ -24,6 +26,25 @@ const schema = z.object({
             "File must be an audio or a video file"
         ),
 });
+
+const UploadFileButton = () => {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" className="bg-purple-600" disabled={pending}>
+            {pending ? (
+                <span className="flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />{" "}
+                    Uploading...
+                </span>
+            ) : (
+                <span className="flex items-center justify-center">
+                    <UploadCloud className="w-5 h-5 mr-2" />
+                    Upload File
+                </span>
+            )}
+        </Button>
+    );
+};
 
 export default function UploadForm() {
     const { startUpload } = useUploadThing("videoOrAudioUploader", {
@@ -53,6 +74,8 @@ export default function UploadForm() {
                     validatedFields.error.flatten().fieldErrors.file?.[0] ??
                     "Invalid file",
             });
+
+            return;
         }
 
         if (file) {
@@ -108,8 +131,8 @@ export default function UploadForm() {
                     type="file"
                     accept="audio/*,video/*"
                     required
-                />
-                <Button className="bg-purple-600">Upload File</Button>
+                ></Input>
+                <UploadFileButton />
             </div>
         </form>
     );

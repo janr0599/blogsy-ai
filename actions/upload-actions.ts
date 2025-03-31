@@ -4,14 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { AssemblyAI } from "assemblyai";
 import { GoogleGenAI } from "@google/genai";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
 
 const client = new AssemblyAI({
-    apiKey: "3cef39ab9ad646b68553b9e9984e7b17",
+    apiKey: process.env.ASSEMBLY_AI_API_KEY || "",
 });
 
 export async function transcribeUploadedFile(
@@ -41,19 +36,6 @@ export async function transcribeUploadedFile(
 
     const response = await fetch(fileUrl);
 
-    // try {
-    //     const transcriptions = await openai.audio.transcriptions.create({
-    //         model: "whisper-1",
-    //         file: response,
-    //     });
-
-    //     console.log({ transcriptions });
-    //     return {
-    //         success: true,
-    //         message: "File uploaded successfully!",
-    //         data: { transcriptions, userId },
-    //     };
-
     try {
         const audioUrl = response.url;
 
@@ -75,13 +57,13 @@ export async function transcribeUploadedFile(
     } catch (error) {
         console.error("Error processing file", error);
 
-        if (error instanceof OpenAI.APIError && error.status === 413) {
-            return {
-                success: false,
-                message: "File size exceeds the max limit of 20MB",
-                data: null,
-            };
-        }
+        // if (error instanceof OpenAI.APIError && error.status === 413) {
+        //     return {
+        //         success: false,
+        //         message: "File size exceeds the max limit of 20MB",
+        //         data: null,
+        //     };
+        // }
 
         return {
             success: false,
@@ -160,7 +142,7 @@ async function generateBlogPost({
             },
         ],
     });
-    console.log(response.text);
+    // console.log(response.text);
     return response.text;
 }
 
@@ -171,9 +153,9 @@ export async function generateBlogPostAction({
     transcript: { text: string };
     userId: string;
 }) {
-    const userPosts = [];
-    // const userPosts = await getUserBlogPosts(userId);
-    // let postId = null;
+    // const userPosts = [];
+    const userPosts = await getUserBlogPosts(userId);
+    let postId = null;
 
     if (transcript) {
         const blogPost = await generateBlogPost({
@@ -192,14 +174,14 @@ export async function generateBlogPostAction({
 
         const [title, ...contentParts] = blogPost?.split("\n\n") || [];
 
-        // //database connection
+        //database connection
 
-        // if (blogPost) {
-        //     postId = await saveBlogPost(userId, title, blogPost);
-        // }
+        if (blogPost) {
+            postId = await saveBlogPost(userId, title, blogPost);
+        }
     }
 
     // //navigate
-    // revalidatePath(`/posts/${postId}`);
-    // redirect(`/posts/${postId}`);
+    revalidatePath(`/posts/${postId}`);
+    redirect(`/posts/${postId}`);
 }
