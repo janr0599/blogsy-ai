@@ -5,24 +5,24 @@ import { UploadThingError } from "uploadthing/server";
 const f = createUploadthing();
 
 export const ourFileRouter = {
-    videoOrAudioUploader: f({
-        video: {
-            maxFileSize: "32MB",
-        },
-    })
+    videoOrAudioUploader: f({ video: { maxFileSize: "32MB" } })
         .middleware(async ({ req }) => {
             const user = await currentUser();
+
+            console.log({ user });
 
             if (!user) throw new UploadThingError("Unauthorized");
 
             return { userId: user.id };
         })
         .onUploadComplete(async ({ metadata, file }) => {
+            // This code RUNS ON YOUR SERVER after upload
             console.log("Upload complete for userId:", metadata.userId);
 
             console.log("file url", file.ufsUrl);
 
-            return { uploadedBy: metadata.userId, fileUrl: file.ufsUrl };
+            // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+            return { userId: metadata.userId, fileUrl: file.ufsUrl };
         }),
 } satisfies FileRouter;
 
