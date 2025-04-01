@@ -96,28 +96,28 @@ async function saveBlogPost(userId: string, title: string, content: string) {
     }
 }
 
-async function getUserBlogPosts(userId: string) {
-    try {
-        const sql = await getDbConnection();
-        const posts = await sql`
-    SELECT content FROM posts 
-    WHERE user_id = ${userId} 
-    ORDER BY created_at DESC 
-    LIMIT 1
-  `;
-        return posts.map((post) => post.content).join("\n\n");
-    } catch (error) {
-        console.error("Error getting user blog posts", error);
-        throw error;
-    }
-}
+// async function getUserBlogPosts(userId: string) {
+//     try {
+//         const sql = await getDbConnection();
+//         const posts = await sql`
+//     SELECT content FROM posts
+//     WHERE user_id = ${userId}
+//     ORDER BY created_at DESC
+//     LIMIT 1
+//   `;
+//         return posts.map((post) => post.content).join("\n\n");
+//     } catch (error) {
+//         console.error("Error getting user blog posts", error);
+//         throw error;
+//     }
+// }
 
 async function generateBlogPost({
     transcript,
-    userPosts,
-}: {
+}: // userPosts,
+{
     transcript: string;
-    userPosts: string;
+    // userPosts: string;
 }) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -129,8 +129,6 @@ async function generateBlogPost({
                 parts: [
                     {
                         text: `Focus on current content. Use neutral professional tone.
-                    Here is some one of my previous blog posts for reference:
-                    ${userPosts}
                     Please convert the following transcription into a well-structured blog post using Markdown formatting. Follow this structure:
                     1. Start with a SEO friendly catchy title on the first line.
                     2. Add two newlines after the title.
@@ -161,13 +159,13 @@ export async function generateBlogPostAction({
     userId: string;
 }) {
     // const userPosts = [];
-    const userPosts = await getUserBlogPosts(userId);
+    // const userPosts = await getUserBlogPosts(userId);
     let postId = null;
 
     if (transcript) {
         const blogPost = await generateBlogPost({
             transcript: transcript.text,
-            userPosts,
+            // userPosts,
         });
 
         console.log(blogPost);
