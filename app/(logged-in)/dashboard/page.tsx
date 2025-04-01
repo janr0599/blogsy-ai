@@ -43,7 +43,7 @@ export default async function Dashboard() {
     const plan = getPlanType(priceId) || { id: "starter", name: "Starter" };
     const { id: planTypeId, name: planTypeName } = plan;
 
-    const isBasicPlan = planTypeId === "basic" || "starter";
+    const isBasicPlan = planTypeId === "basic" || planTypeId === "starter";
     const isProPlan = planTypeId === "pro";
 
     // check number of posts per plan
@@ -85,7 +85,7 @@ export default async function Dashboard() {
                         </p>
                     )}
 
-                    {isValidBasicPlan || isProPlan || !hasUserCancelled ? (
+                    {!hasUserCancelled && (isValidBasicPlan || isProPlan) ? (
                         <BgGradient>
                             <UploadForm />
                         </BgGradient>
