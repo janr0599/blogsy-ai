@@ -103,7 +103,7 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                     </Button>
                 </div>
             </div>
-            <BgGradient className="opacity-20">
+            <BgGradient>
                 <ForwardRefEditor
                     markdown={posts[0].content}
                     className="markdown-content border-dotted border-gray-300 border-2 p-4 rounded-md animate-in ease-in-out duration-75"
