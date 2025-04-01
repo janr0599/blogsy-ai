@@ -26,7 +26,6 @@ import {
     type MDXEditorMethods,
     type MDXEditorProps,
     CodeToggle,
-    InsertCodeBlock,
 } from "@mdxeditor/editor";
 
 // Only import this to the next file
@@ -46,7 +45,6 @@ export default function InitializedMDXEditor({
                 linkDialogPlugin(),
                 imagePlugin(),
                 tablePlugin(),
-                diffSourcePlugin(),
                 toolbarPlugin({
                     toolbarContents: () => (
                         <DiffSourceToggleWrapper>
@@ -63,7 +61,6 @@ export default function InitializedMDXEditor({
                             <InsertTable />
                             <Separator />
                             <CodeToggle />
-                            <InsertCodeBlock />
                         </DiffSourceToggleWrapper>
                     ),
                 }),
