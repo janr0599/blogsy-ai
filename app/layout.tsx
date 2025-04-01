@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         shortcut: "/icon.ico",
         apple: "/icon.ico",
     },
-    metadataBase: new URL("https://blogsyai.app"),
+    metadataBase: new URL("https://www.blogsyai.app"),
 };
 
 export default function RootLayout({
