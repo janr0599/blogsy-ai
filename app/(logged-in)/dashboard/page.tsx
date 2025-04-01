@@ -43,7 +43,7 @@ export default async function Dashboard() {
     const plan = getPlanType(priceId) || { id: "starter", name: "Starter" };
     const { id: planTypeId, name: planTypeName } = plan;
 
-    const isBasicPlan = planTypeId === "basic";
+    const isBasicPlan = planTypeId === "basic" || "starter";
     const isProPlan = planTypeId === "pro";
 
     // check number of posts per plan
