@@ -38,7 +38,7 @@ export default async function Dashboard() {
 
     // const isFreePlan = planType === "starter";
     const isBasicPlan = planTypeId === "basic";
-    const isProPlan = planTypeId === "pro";
+    // const isProPlan = planTypeId === "pro";
 
     return (
         <BgGradient>

@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
 import { updatePostAction } from "@/actions/edit-actions";
 import { Button } from "../ui/button";
 import { Download, Edit2, Loader2 } from "lucide-react";
+import { Post } from "@/app/(logged-in)/posts/[id]/page";
 
 function SubmitButton({ isChanged }: { isChanged: boolean }) {
     const { pending } = useFormStatus();
@@ -44,11 +45,7 @@ type UploadAction = (
     formData: FormData
 ) => Promise<UploadState>;
 
-export default function ContentEditor({
-    posts,
-}: {
-    posts: Array<{ content: string; title: string; id: string }>;
-}) {
+export default function ContentEditor({ posts }: { posts: Post[] }) {
     const initialContent = posts[0].content;
     const [content, setContent] = useState(posts[0].content);
     const [isChanged, setIsChanged] = useState(false);

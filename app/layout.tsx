@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         shortcut: "/icon.ico",
         apple: "/icon.ico",
     },
-    metadataBase: new URL("https://blogsy-ai.vercel.app"),
+    metadataBase: new URL("https://blogsyai.app"),
 };
 
 export default function RootLayout({
