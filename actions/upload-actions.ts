@@ -103,7 +103,7 @@ async function getUserBlogPosts(userId: string) {
     SELECT content FROM posts 
     WHERE user_id = ${userId} 
     ORDER BY created_at DESC 
-    LIMIT 3
+    LIMIT 1
   `;
         return posts.map((post) => post.content).join("\n\n");
     } catch (error) {
@@ -128,8 +128,8 @@ async function generateBlogPost({
                 role: "user",
                 parts: [
                     {
-                        text: `You are a skilled content writer that converts audio transcriptions into well-structured, engaging blog posts in Markdown format. Create a comprehensive blog post with a catchy title, introduction, main body with multiple sections, and a conclusion. Analyze the user's writing style from their previous posts and emulate their tone and style in the new post. Keep the tone casual and professional.
-                    Here are some of my previous blog posts for reference:
+                        text: `Focus on current content. Use neutral professional tone.
+                    Here is some one of my previous blog posts for reference:
                     ${userPosts}
                     Please convert the following transcription into a well-structured blog post using Markdown formatting. Follow this structure:
                     1. Start with a SEO friendly catchy title on the first line.
@@ -139,14 +139,15 @@ async function generateBlogPost({
                     5. Include relevant subheadings within sections if needed.
                     6. Use bullet points or numbered lists where appropriate.
                     7. Add a conclusion paragraph at the end.
-                    8. Ensure the content is informative, well-organized, and easy to read.
-                    9. Emulate my writing style, tone, and any recurring patterns you notice from my previous posts.
-                    Here's the transcription to convert: ${transcript}
-                    10. Avoid using backticks or the markdown word at the beginning or end of the generated content`,
+                    8. Avoid using backticks or the markdown word at the beginning or end of the generated content.
+                    Here's the transcription to convert: ${transcript}`,
                     },
                 ],
             },
         ],
+        config: {
+            maxOutputTokens: 500,
+        },
     });
     // console.log(response.text);
     return response.text;
