@@ -79,11 +79,16 @@ export async function transcribeUploadedFile(
 async function saveBlogPost(userId: string, title: string, content: string) {
     try {
         const sql = await getDbConnection();
-        const [insertedPost] = await sql`
-    INSERT INTO posts (user_id, title, content)
-    VALUES (${userId}, ${title}, ${content})
-    RETURNING id
-    `;
+        const result = await sql`
+        INSERT INTO posts (user_id, title, content)
+        VALUES (${userId}, ${title}, ${content})
+        RETURNING id
+      `;
+        console.log("SQL insert result:", result);
+        const [insertedPost] = result;
+        if (!insertedPost) {
+            throw new Error("No post returned from the database insertion");
+        }
         return insertedPost.id;
     } catch (error) {
         console.error("Error saving blog post", error);
@@ -172,7 +177,14 @@ export async function generateBlogPostAction({
             };
         }
 
-        const [title, ...contentParts] = blogPost?.split("\n\n") || [];
+        let [title, ...contentParts] = blogPost.split("\n\n");
+        if (!title || title.trim() === "") {
+            title = "Untitled Blog Post";
+        }
+
+        console.log(title);
+        console.log(contentParts);
+        // const [title, ...contentParts] = blogPost?.split("\n\n") || [];
 
         //database connection
 
@@ -182,6 +194,13 @@ export async function generateBlogPostAction({
     }
 
     // //navigate
-    revalidatePath(`/posts/${postId}`);
-    redirect(`/posts/${postId}`);
+    if (postId) {
+        revalidatePath(`/posts/${postId}`);
+        redirect(`/posts/${postId}`);
+    } else {
+        console.error(
+            "Post ID is invalid. The blog post might not have been saved correctly."
+        );
+        // Optionally, return a response or display an error message
+    }
 }
