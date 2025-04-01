@@ -13,7 +13,7 @@ export type Post = {
 export default async function PostsPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const { id } = await params;
     const user = await currentUser();
