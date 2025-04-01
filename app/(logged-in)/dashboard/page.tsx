@@ -48,6 +48,7 @@ export default async function Dashboard() {
 
     // check number of posts per plan
     const posts = await sql`SELECT * FROM posts WHERE user_id = ${userId}`;
+    console.log(posts);
 
     const isValidBasicPlan = isBasicPlan && posts.length < 3;
 

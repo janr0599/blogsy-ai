@@ -21,11 +21,10 @@ import {
     imagePlugin,
     InsertTable,
     tablePlugin,
-    DiffSourceToggleWrapper,
-    type MDXEditorMethods,
-    type MDXEditorProps,
     CodeToggle,
     InsertThematicBreak,
+    type MDXEditorMethods,
+    type MDXEditorProps,
 } from "@mdxeditor/editor";
 
 // Only import this to the next file

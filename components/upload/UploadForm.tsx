@@ -108,12 +108,18 @@ export default function UploadForm() {
                         "Please wait while we generate your blog post.",
                 });
 
-                await generateBlogPostAction({
-                    transcript: data.transcript
-                        ? { text: data.transcript }
-                        : { text: "" },
-                    userId: data.userId,
-                });
+                try {
+                    await generateBlogPostAction({
+                        transcript: data.transcript
+                            ? { text: data.transcript }
+                            : { text: "" },
+                        userId: data.userId,
+                    });
+                } catch (error: any) {
+                    if (error.message.includes("timeout")) {
+                        toast.info("Taking longer than usual...");
+                    }
+                }
 
                 toast.success("🎉 Woohoo! Your AI blog is created! 🎊", {
                     description:
