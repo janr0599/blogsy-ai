@@ -22,10 +22,10 @@ import {
     InsertTable,
     tablePlugin,
     DiffSourceToggleWrapper,
-    diffSourcePlugin,
     type MDXEditorMethods,
     type MDXEditorProps,
     CodeToggle,
+    InsertThematicBreak,
 } from "@mdxeditor/editor";
 
 // Only import this to the next file
@@ -45,9 +45,10 @@ export default function InitializedMDXEditor({
                 linkDialogPlugin(),
                 imagePlugin(),
                 tablePlugin(),
+                thematicBreakPlugin(),
                 toolbarPlugin({
                     toolbarContents: () => (
-                        <DiffSourceToggleWrapper>
+                        <>
                             <UndoRedo />
                             <Separator />
                             <BoldItalicUnderlineToggles />
@@ -59,9 +60,10 @@ export default function InitializedMDXEditor({
                             <CreateLink />
                             <InsertImage />
                             <InsertTable />
+                            <InsertThematicBreak />
                             <Separator />
                             <CodeToggle />
-                        </DiffSourceToggleWrapper>
+                        </>
                     ),
                 }),
             ]}
