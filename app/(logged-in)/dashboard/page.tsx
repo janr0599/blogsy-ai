@@ -40,8 +40,8 @@ export default async function Dashboard() {
         priceId = user[0].price_id;
     }
 
-    const { id: planTypeId = "starter", name: planTypeName } =
-        getPlanType(priceId);
+    const plan = getPlanType(priceId) || { id: "starter", name: "Starter" };
+    const { id: planTypeId, name: planTypeName } = plan;
 
     const isBasicPlan = planTypeId === "basic";
     const isProPlan = planTypeId === "pro";
