@@ -141,7 +141,8 @@ async function generateBlogPost({
                     7. Add a conclusion paragraph at the end.
                     8. Ensure the content is informative, well-organized, and easy to read.
                     9. Emulate my writing style, tone, and any recurring patterns you notice from my previous posts.
-                    Here's the transcription to convert: ${transcript}`,
+                    Here's the transcription to convert: ${transcript}
+                    10. Avoid using backticks or the markdown word at the beginning or end of the generated content`,
                     },
                 ],
             },
