@@ -77,7 +77,7 @@ export default function Pricing() {
                                         <Button
                                             variant={"link"}
                                             className={cn(
-                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline",
+                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline hover:text-purple-600 transition-colors",
                                                 id === "pro" &&
                                                     "border-amber-300 "
                                             )}
@@ -86,7 +86,9 @@ export default function Pricing() {
                                                 href={paymentLink}
                                                 className="flex gap-1 items-center"
                                             >
-                                                Get Blogsy AI{" "}
+                                                {id === "starter"
+                                                    ? "Try Free"
+                                                    : "Get Blogsy AI"}
                                                 <ArrowRight size={18} />
                                             </Link>
                                         </Button>

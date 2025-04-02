@@ -3,12 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import UpgradeYourPlan from "@/components/upload/UpgradeYourPlan";
 import UploadForm from "@/components/upload/UploadForm";
 import getDbConnection from "@/lib/db";
-import {
-    userExists,
-    getPlanType,
-    hasCancelledPlan,
-    updateUser,
-} from "@/lib/user-helpers";
+import { userExists, getPlanType, hasCancelledPlan } from "@/lib/user-helpers";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -23,7 +18,6 @@ export default async function Dashboard() {
 
     const sql = await getDbConnection();
 
-    //updatethe user id
     let userId = null;
     let priceId = null;
 
@@ -31,11 +25,7 @@ export default async function Dashboard() {
     const user = await userExists(sql, email);
 
     if (user) {
-        //update the user_id in users table
-        userId = clerkUser?.id;
-        if (userId) {
-            await updateUser(sql, userId, email);
-        }
+        userId = user[0].user_id;
 
         priceId = user[0].price_id;
     }
@@ -43,16 +33,16 @@ export default async function Dashboard() {
     const plan = getPlanType(priceId) || { id: "starter", name: "Starter" };
     const { id: planTypeId, name: planTypeName } = plan;
 
-    const isBasicPlan = planTypeId === "basic" || planTypeId === "starter";
+    const isStarterPlan = planTypeId === "starter";
     const isProPlan = planTypeId === "pro";
 
     // check number of posts per plan
     const posts = await sql`SELECT * FROM posts WHERE user_id = ${userId}`;
     console.log(posts.length);
 
-    const isValidBasicPlan = isBasicPlan && posts.length < 3;
-    console.log(isBasicPlan);
-    console.log(isValidBasicPlan);
+    const isValidStarterPlan = isStarterPlan && posts.length < 3;
+    console.log(isStarterPlan);
+    console.log(isValidStarterPlan);
 
     return (
         <BgGradient>
@@ -71,11 +61,11 @@ export default async function Dashboard() {
                         magic!
                     </p>
 
-                    {(isBasicPlan || isProPlan) && (
+                    {(isStarterPlan || isProPlan) && (
                         <p className="mt-2 text-lg leading-8 text-gray-600 max-w-2xl text-center">
                             You get{" "}
                             <span className="font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded-md">
-                                {isBasicPlan ? "3" : "Unlimited"} blog posts
+                                {isStarterPlan ? "3" : "Unlimited"} blog posts
                             </span>{" "}
                             as part of the{" "}
                             <span className="font-bold capitalize">
@@ -85,7 +75,7 @@ export default async function Dashboard() {
                         </p>
                     )}
 
-                    {!hasUserCancelled && (isValidBasicPlan || isProPlan) ? (
+                    {!hasUserCancelled && (isValidStarterPlan || isProPlan) ? (
                         <BgGradient>
                             <UploadForm />
                         </BgGradient>

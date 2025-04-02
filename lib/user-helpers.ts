@@ -16,14 +16,6 @@ export function getPlanType(priceId: string) {
     return checkPlanType?.[0];
 }
 
-export async function updateUser(
-    sql: NeonQueryFunction<false, false>,
-    userId: string,
-    email: string
-) {
-    return sql`UPDATE users SET user_id = ${userId} WHERE email = ${email}`;
-}
-
 export async function userExists(
     sql: NeonQueryFunction<false, false>,
     email: string

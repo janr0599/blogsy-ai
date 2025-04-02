@@ -78,7 +78,7 @@ export async function POST(req: Request) {
             if (existingUser.length === 0) {
                 // Insert the new user if not found
                 await sql`
-          INSERT INTO users (email, full_name, customer_id)
+          INSERT INTO users (email, full_name, user_id)
           VALUES (${email}, ${fullName}, ${clerkUserId})
         `;
                 console.log(
