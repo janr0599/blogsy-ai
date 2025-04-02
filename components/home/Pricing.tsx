@@ -79,7 +79,7 @@ export default function Pricing() {
                                         <Button
                                             variant={"link"}
                                             className={cn(
-                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline hover:bg-purple-600 transition-colors",
+                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline hover:scale-105 transition-transform",
                                                 id === "pro" &&
                                                     "border-amber-300 "
                                             )}
