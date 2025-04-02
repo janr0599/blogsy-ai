@@ -3,8 +3,24 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { plans } from "@/lib/constants";
+import { currentUser } from "@clerk/nextjs/server";
+import getDbConnection from "@/lib/db";
+import { userExists } from "@/lib/user-helpers";
 
-export default function Pricing() {
+export default async function Pricing() {
+    const sql = await getDbConnection();
+
+    const clerkUser = await currentUser();
+    const email = clerkUser?.emailAddresses[0].emailAddress ?? "";
+
+    let userPriceId = null;
+
+    const user = await userExists(sql, email);
+
+    if (user) {
+        userPriceId = user[0].price_id;
+    }
+
     return (
         <section className="relative overflow-hidden" id="pricing">
             <div className="py-12 lg:py-24 max-w-6xl mx-auto px-12 lg:px-0">
@@ -26,6 +42,7 @@ export default function Pricing() {
                                 items,
                                 id,
                                 paymentLink,
+                                priceId,
                             },
                             i
                         ) => (
@@ -85,11 +102,17 @@ export default function Pricing() {
                                             )}
                                         >
                                             <Link
-                                                href={paymentLink}
+                                                href={
+                                                    userPriceId === priceId
+                                                        ? "/dashboard"
+                                                        : paymentLink
+                                                }
                                                 className="flex gap-1 items-center"
                                             >
                                                 {id === "starter"
                                                     ? "Try Free"
+                                                    : userPriceId === priceId
+                                                    ? "Current Plan"
                                                     : "Get Blogsy AI"}
                                                 <ArrowRight size={18} />
                                             </Link>
