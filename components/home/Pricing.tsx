@@ -51,14 +51,16 @@ export default function Pricing() {
                                         <p className="text-5xl tracking-tight font-extrabold">
                                             {price}
                                         </p>
-                                        <div className="flex flex-col justify-end mb-[4px]">
-                                            <p className="text-xs text-base-content/60 uppercase font-semibold">
-                                                USD
-                                            </p>
-                                            <p className="text-xs text-base-content/60">
-                                                /month
-                                            </p>
-                                        </div>
+                                        {id === "pro" && (
+                                            <div className="flex flex-col justify-end mb-[4px]">
+                                                <p className="text-xs text-base-content/60 uppercase font-semibold">
+                                                    USD
+                                                </p>
+                                                <p className="text-xs text-base-content/60">
+                                                    /month
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                     <ul className="space-y-2.5 leading-relaxed text-base flex-1">
                                         {items.map((item, i) => (
@@ -77,7 +79,7 @@ export default function Pricing() {
                                         <Button
                                             variant={"link"}
                                             className={cn(
-                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline hover:text-purple-600 transition-colors",
+                                                "border-2 rounded-full flex gap-2 bg-black text-gray-100 hover:no-underline hover:bg-purple-600 transition-colors",
                                                 id === "pro" &&
                                                     "border-amber-300 "
                                             )}
