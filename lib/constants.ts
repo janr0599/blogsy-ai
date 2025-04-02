@@ -6,10 +6,7 @@ export const plans = [
         price: "Free",
         items: ["3 blog posts", "3 Transcriptions"],
         paymentLink: "/dashboard",
-        priceId:
-            process.env.NODE_ENV === "development"
-                ? "price_1R8M89BpXPPZ8q082M68MGrK"
-                : "price_1R8vVSBpXPPZ8q08Q5iX5bDZ",
+        priceId: "",
     },
     {
         id: "pro",
