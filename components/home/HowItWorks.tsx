@@ -2,7 +2,7 @@ import { MoveDownIcon, MoveRightIcon } from "lucide-react";
 
 export default function HowItWorks() {
     return (
-        <section className="py-24 relative overflow-hidden mx-auto">
+        <section className="py-24 relative overflow-hidden max-w-6xl mx-auto">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
