@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, useCallback, useState } from "react";
+import {
+    useActionState,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import BgGradient from "@/components/ui/BgGradient";
 import { ForwardRefEditor } from "./forward-ref-editor";
 import { useFormStatus } from "react-dom";
@@ -46,13 +52,38 @@ type UploadAction = (
 ) => Promise<UploadState>;
 
 export default function ContentEditor({ posts }: { posts: Post[] }) {
-    const initialContent = posts[0].content;
-    const [content, setContent] = useState(posts[0].content);
+    const [initialContent, setInitialContent] = useState<string | null>(null);
+    const [content, setContent] = useState<string | null>(null);
     const [isChanged, setIsChanged] = useState(false);
 
+    // Ref to track if the component is mounted
+    const isMounted = useRef(true);
+
+    useEffect(() => {
+        isMounted.current = true;
+
+        // Initialize content and initialContent
+        if (posts.length > 0) {
+            setInitialContent(posts[0].content);
+            setContent(posts[0].content);
+            setIsChanged(false); // Ensure isChanged is false initially
+        }
+
+        return () => {
+            isMounted.current = false; // Cleanup function to mark the component as unmounted
+        };
+    }, [posts]);
+
+    // Update isChanged whenever content or initialContent changes
+    useEffect(() => {
+        if (content !== null && initialContent !== null) {
+            setIsChanged(content !== initialContent);
+        }
+    }, [content, initialContent]);
+
     const updatedPostActionWithId = updatePostAction.bind(null, {
-        postId: posts[0].id,
-        content,
+        postId: posts[0]?.id,
+        content: content || "",
     });
 
     const [state, formAction] = useActionState<UploadState, FormData>(
@@ -61,14 +92,15 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
     );
 
     const handleContentChange = (value: string) => {
-        setContent(value);
-        setIsChanged(value !== initialContent);
+        if (isMounted.current) {
+            setContent(value);
+        }
     };
 
     const handleExport = useCallback(() => {
-        const filename = `${posts[0].title || "blog-post"}.md`;
+        const filename = `${posts[0]?.title || "blog-post"}.md`;
 
-        const blob = new Blob([content], {
+        const blob = new Blob([content || ""], {
             type: "text/markdown;charset=utf-8",
         });
         const url = URL.createObjectURL(blob);
@@ -80,6 +112,19 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     }, [content, posts]);
+
+    // Render a loading state until the content is initialized
+    if (!posts || posts.length === 0) {
+        return <p>No content available for this post.</p>;
+    }
+
+    if (content === null) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <p>Loading...</p>
+            </div>
+        );
+    }
 
     return (
         <form action={formAction} className="flex flex-col gap-2">
@@ -105,7 +150,7 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
             </div>
             <BgGradient>
                 <ForwardRefEditor
-                    markdown={posts[0].content}
+                    markdown={content || ""}
                     className="markdown-content border-dotted border-gray-300 border-2 p-4 rounded-md animate-in ease-in-out duration-75"
                     onChange={handleContentChange}
                 ></ForwardRefEditor>
@@ -113,3 +158,4 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
         </form>
     );
 }
+//good

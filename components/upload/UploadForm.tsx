@@ -49,13 +49,13 @@ const UploadFileButton = () => {
 export default function UploadForm() {
     const { startUpload } = useUploadThing("videoOrAudioUploader", {
         onClientUploadComplete: () => {
-            toast("uploaded successfully!");
+            console.log("uploaded successfully!");
         },
         onUploadError: (err: Error) => {
             console.error("Error occurred", err);
         },
         onUploadBegin: () => {
-            toast.info("Upload has begun 🚀!");
+            toast.info("Upload has begun! 🚀");
         },
     });
 

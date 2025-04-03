@@ -1,5 +1,6 @@
 import BgGradient from "@/components/ui/BgGradient";
 import getDbConnection from "@/lib/db";
+import { sanitizeTitle } from "@/utils/sanitizeTitle";
 import { currentUser } from "@clerk/nextjs/server";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -41,7 +42,7 @@ export default async function Page() {
                     <BgGradient key={post.id}>
                         <div className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
                             <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">
-                                {post.title}
+                                {sanitizeTitle(post.title)}
                             </h3>
                             <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                                 {post.content.split("\n").slice(1).join("\n")}
