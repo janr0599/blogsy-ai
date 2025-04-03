@@ -26,23 +26,27 @@ export default async function Dashboard() {
 
     if (user) {
         userId = user[0].user_id;
-
         priceId = user[0].price_id;
     }
 
-    const plan = getPlanType(priceId) || { id: "starter", name: "Starter" };
+    // If the user has cancelled, treat them as if they are on the "starter" plan
+    const plan = hasUserCancelled
+        ? { id: "starter", name: "Starter" }
+        : getPlanType(priceId) || { id: "starter", name: "Starter" };
+
     const { id: planTypeId, name: planTypeName } = plan;
 
     const isStarterPlan = planTypeId === "starter";
     const isProPlan = planTypeId === "pro";
 
-    // check number of posts per plan
+    // Check the number of posts for the user
     const posts = await sql`SELECT * FROM posts WHERE user_id = ${userId}`;
     console.log(posts.length);
 
     const isValidStarterPlan = isStarterPlan && posts.length < 3;
-    console.log(isStarterPlan);
-    console.log(isValidStarterPlan);
+    const canUpload = isValidStarterPlan || isProPlan;
+
+    const showUpgradePlan = posts.length >= 3;
 
     return (
         <BgGradient>
@@ -75,12 +79,17 @@ export default async function Dashboard() {
                         </p>
                     )}
 
-                    {!hasUserCancelled && (isValidStarterPlan || isProPlan) ? (
+                    {canUpload ? (
                         <BgGradient>
                             <UploadForm />
                         </BgGradient>
-                    ) : (
+                    ) : showUpgradePlan ? (
                         <UpgradeYourPlan />
+                    ) : (
+                        <p className="text-lg text-gray-600">
+                            You have reached your plan's limit. Upgrade to Pro
+                            to upload more posts.
+                        </p>
                     )}
                 </div>
             </div>

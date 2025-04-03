@@ -14,7 +14,10 @@ export const plans = [
         description: "All blog posts let's go!",
         price: "9.99",
         items: ["Unlimited blog posts", "Unlimited Transcriptions"],
-        paymentLink: "https://buy.stripe.com/eVa8AA7w6amsbHG288",
+        paymentLink:
+            process.env.NODE_ENV === "development"
+                ? "https://buy.stripe.com/test_9AQdUSe1GeyGbZu7ss"
+                : "https://buy.stripe.com/eVa8AA7w6amsbHG288",
         priceId:
             process.env.NODE_ENV === "development"
                 ? "price_1R8M89BpXPPZ8q082M68MGrK"

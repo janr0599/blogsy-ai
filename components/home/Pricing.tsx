@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { plans } from "@/lib/constants";
 
-export default function Pricing() {
+export default function Pricing({ planTypeId }: { planTypeId: string }) {
     return (
         <section className="relative overflow-hidden" id="pricing">
             <div className="py-12 lg:py-24 max-w-6xl mx-auto px-12 lg:px-0">
@@ -85,11 +85,19 @@ export default function Pricing() {
                                             )}
                                         >
                                             <Link
-                                                href={paymentLink}
+                                                href={
+                                                    id === "pro" &&
+                                                    planTypeId === "pro"
+                                                        ? "/dashboard"
+                                                        : paymentLink
+                                                }
                                                 className="flex gap-1 items-center"
                                             >
-                                                {id === "starter"
-                                                    ? "Try Free"
+                                                {id === "pro" &&
+                                                planTypeId === "pro"
+                                                    ? "Current Plan"
+                                                    : id === "starter"
+                                                    ? "Try for Free"
                                                     : "Get Blogsy AI"}
                                                 <ArrowRight size={18} />
                                             </Link>

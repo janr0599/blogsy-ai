@@ -5,7 +5,12 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripeSecretKey =
+    process.env.NODE_ENV === "development"
+        ? process.env.DEV_STRIPE_SECRET_KEY
+        : process.env.STRIPE_SECRET_KEY;
+
+const stripe = new Stripe(stripeSecretKey!);
 
 export async function POST(req: NextRequest) {
     //webhook functionality
@@ -15,11 +20,16 @@ export async function POST(req: NextRequest) {
 
     let event;
 
+    const stripeWebhookSecret =
+        process.env.NODE_ENV === "development"
+            ? process.env.DEV_STRIPE_WEBHOOK_SECRET
+            : process.env.STRIPE_WEBHOOK_SECRET;
+
     try {
         event = stripe.webhooks.constructEvent(
             payload,
             sig!,
-            process.env.STRIPE_WEBHOOK_SECRET!
+            stripeWebhookSecret!
         );
 
         // Handle the event

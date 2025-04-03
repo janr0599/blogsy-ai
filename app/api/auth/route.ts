@@ -4,13 +4,18 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import getDbConnection from "@/lib/db"; // Adjust the import path as needed
 
 export async function POST(req: Request) {
-    const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+    const SIGNING_SECRET =
+        process.env.NODE_ENV === "development"
+            ? process.env.DEV_CLERK_WEBHOOK_SECRET
+            : process.env.CLERK_WEBHOOK_SECRET;
 
     if (!SIGNING_SECRET) {
         throw new Error(
             "Error: Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to your environment"
         );
     }
+
+    console.log("DEV_CLERK_WEBHOOK_SECRET:", SIGNING_SECRET);
 
     // Create a new Svix instance with the secret
     const wh = new Webhook(SIGNING_SECRET);
@@ -24,6 +29,12 @@ export async function POST(req: Request) {
     if (!svix_id || !svix_timestamp || !svix_signature) {
         return new Response("Error: Missing Svix headers", { status: 400 });
     }
+
+    console.log("Headers:", {
+        svix_id,
+        svix_timestamp,
+        svix_signature,
+    });
 
     // Read the request body and convert to a string for verification
     const payload = await req.json();
