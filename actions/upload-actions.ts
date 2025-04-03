@@ -124,17 +124,21 @@ async function generateBlogPost({
                     Here is the latest blog post for your reference:
                     ${userPosts}
                     Please convert the following transcription into a well-structured blog post using Markdown formatting. Follow this structure:
-                    1. Start with a SEO friendly catchy title on the first line.
-                    2. Add two newlines after the title.
-                    3. Write an engaging introduction paragraph.
-                    4. Create multiple sections for the main content, using appropriate headings (##, ###).
-                    5. Include relevant subheadings within sections if needed.
-                    6. Use bullet points or numbered lists where appropriate.
-                    7. Add a conclusion paragraph at the end.
-                    8. Ensure the content is informative, well-organized, and easy to read.
-                    9. Emulate my writing style, tone, and any recurring patterns you notice from my previous posts.
+                    1. Generate a dedicated SEO title that includes the focus keyword and eliminates unnecessary stop words.
+                    2. Immediately after the title, include a meta description that is SEO-friendly and uses the focus keyword if appropriate.
+                    3. Ensure the focus keyword appears in the first paragraph and in at least one additional subheading.
+                    4. Integrate at least one relevant image (or placeholder text for an image) and include internal links to related content. Make sure to make this bolds so user can tell them apart from the rest of the content.
+                    5. Adjust sentence structure to improve the Flesch Reading Ease score. Use shorter sentences and more transition words.
+                    6. Add two newlines after the title.
+                    7. Create multiple sections for the main content, using appropriate headings (##, ###).
+                    8. Include relevant subheadings within sections if needed.
+                    9. Use bullet points or numbered lists where appropriate.
+                    10. Add a conclusion paragraph at the end.
+                    11. Ensure the content is informative, well-organized, SEO optimized, and easy to read.
+                    12. Include keywords related to the immigration industry and the topic of the transcript.
+                    13. Emulate my writing style, tone, and any recurring patterns you notice from my previous posts.
                     Here's the transcription to convert: ${transcript}
-                    10. Avoid using backticks or the markdown word at the beginning or end of the generated content`,
+                    14. Avoid using backticks or the markdown word at the beginning or end of the generated content`,
                     },
                 ],
             },
