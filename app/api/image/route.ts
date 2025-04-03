@@ -20,7 +20,7 @@ async function toNodeReadable(req: NextRequest): Promise<Readable> {
     return readable;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
     const form = formidable({
         multiples: false,
         keepExtensions: true, // Keep file extensions
@@ -32,18 +32,19 @@ export async function POST(req: NextRequest) {
         form.parse(nodeReq as any, async (err, fields, files) => {
             if (err) {
                 console.error("Error parsing form:", err);
-                return resolve(
+                resolve(
                     NextResponse.json(
                         { error: "Error parsing form data" },
                         { status: 500 }
                     )
                 );
+                return;
             }
 
             const file = files.file as File | File[] | undefined;
 
             if (!file || Array.isArray(file)) {
-                return resolve(
+                resolve(
                     NextResponse.json(
                         {
                             error: "No file uploaded or multiple files uploaded",
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
                         { status: 400 }
                     )
                 );
+                return;
             }
 
             try {
@@ -73,7 +75,7 @@ export async function POST(req: NextRequest) {
                     Readable.from(fileBuffer).pipe(uploadStream);
                 });
 
-                return resolve(
+                resolve(
                     NextResponse.json(
                         {
                             message: "Image uploaded successfully",
@@ -84,7 +86,7 @@ export async function POST(req: NextRequest) {
                 );
             } catch (uploadError) {
                 console.error("Error uploading to Cloudinary:", uploadError);
-                return resolve(
+                resolve(
                     NextResponse.json(
                         { error: "Error uploading image" },
                         { status: 500 }
@@ -94,4 +96,3 @@ export async function POST(req: NextRequest) {
         });
     });
 }
-//good

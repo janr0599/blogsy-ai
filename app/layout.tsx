@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/home/Header";
+import { Analytics } from "@vercel/analytics/react";
 
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -37,6 +38,7 @@ export default function RootLayout({
                     <Header />
                     <main>{children}</main>
                     <Toaster richColors position="top-right" />
+                    <Analytics />
                 </body>
             </html>
         </ClerkProvider>
