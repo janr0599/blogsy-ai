@@ -162,13 +162,20 @@
         @apply mb-4 leading-7;
     }
 
-    .markdown-content ul,
+    .markdown-content ul {
+        @apply mb-4 pl-6;
+    }
+
     .markdown-content ol {
         @apply mb-4 pl-6;
     }
 
-    .markdown-content li {
+    .markdown-content ul li {
         @apply mb-2 list-disc;
+    }
+
+    .markdown-content ol li {
+        @apply mb-2 list-decimal;
     }
 
     .markdown-content a {
