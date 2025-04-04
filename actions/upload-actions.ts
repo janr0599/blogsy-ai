@@ -127,7 +127,7 @@ async function generateBlogPost({
                     1. Generate a dedicated SEO title that includes the focus keyword and eliminates unnecessary stop words.
                     2. Immediately after the title, include a meta description that is SEO-friendly and uses the focus keyword if appropriate. Make sure to keep it under 160 characters and start with "Meta descrition" in bold so that the user recognizes it.
                     3. Ensure the focus keyword appears in the first paragraph and in at least one additional subheading.
-                    4. Integrate at least one relevant image (or placeholder text for an image) and include internal links to related content. Make sure to make this bolds so user can tell them apart from the rest of the content.
+                    4. Integrate at least one relevant image placeholder text and include placeholders in brackets to related internal or external content. Make sure to make this bolds so user can tell them apart from the rest of the content.
                     5. Adjust sentence structure to improve the Flesch Reading Ease score. Use shorter sentences and more transition words.
                     6. Add two newlines after the title.
                     7. Create multiple sections for the main content, using appropriate headings (##, ###).
