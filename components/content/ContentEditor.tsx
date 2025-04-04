@@ -158,9 +158,9 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
     );
 
     useEffect(() => {
-        if (state.success) {
+        if (state.success && state.message) {
             toast.success(state.message);
-        } else if (state.success === false) {
+        } else if (state.success === false && state.message) {
             toast.error(state.message);
         }
     }, [state.success, state.message]);
