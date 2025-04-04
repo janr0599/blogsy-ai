@@ -131,6 +131,7 @@ export default function UploadForm() {
     return (
         <form className="flex flex-col gap-6" action={handleTranscribe}>
             <div className="flex justify-end items-center gap-1.5">
+                {/* <label htmlFor="file">Select or drop your file</label> */}
                 <Input
                     id="file"
                     name="file"
