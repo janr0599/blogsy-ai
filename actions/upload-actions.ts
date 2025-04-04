@@ -197,7 +197,7 @@ async function generateSEOData(blogPostContent: string): Promise<{
                         text: `You are an SEO expert. Analyze the following blog post and generate:
                         1. A concise SEO-friendly title.
                         2. A compelling meta description under 160 characters.
-                        3. An array of relevant tags extracted from the blog content.
+                        3. An array of relevant tags. Always put the hash (#) sign in front of the word. Do not use spaces if your hashtag has more than one word. You cannot use punctuation signs in hashtags. Keep it as simple as possible. Use hashtags the target audience for the topic might be searching for. Use specific terms instead broad ones
                         
                         Blog Content:
                         ${blogPostContent}
@@ -206,7 +206,7 @@ async function generateSEOData(blogPostContent: string): Promise<{
                         {
                             "seoTitle": "Your SEO title here",
                             "metaDescription": "Your meta description here",
-                            "tags": ["tag1", "tag2", "tag3"]
+                            "tags": ["#tag1", "#tag2", "#tag3"]
                         }`,
                     },
                 ],

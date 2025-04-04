@@ -12,7 +12,7 @@ import { ForwardRefEditor } from "./forward-ref-editor";
 import { useFormStatus } from "react-dom";
 import { updatePostAction } from "@/actions/edit-actions";
 import { Button } from "../ui/button";
-import { Clipboard, Download, Edit2, Loader2 } from "lucide-react";
+import { Clipboard, Download, Edit2, Globe, Loader2 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Post } from "@/app/(logged-in)/posts/[id]/page";
 import {
@@ -23,6 +23,12 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function SubmitButton({ isChanged }: { isChanged: boolean }) {
     const { pending } = useFormStatus();
@@ -146,97 +152,133 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                         Start editing your blog post below...
                     </p>
                 </div>
-                <div className="flex gap-4 w-2xl sm:w-auto">
+                <div className="flex gap-4">
                     <Sheet>
-                        <SheetTrigger className="bg-blue-900 text-white text-sm font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 ">
-                            SEO Info
+                        <SheetTrigger className="bg-transparent">
+                            <p className="w-40 bg-gradient-to-r from-blue-900 to-cyan-600 hover:from-blue-600 hover:to-cyan-900 text-white font-semibold rounded-full shadow-lg px-2 py-1.5 transform transition duration-200 ease-in-out hover:scale-105 flex items-center justify-center">
+                                <Globe className="w-4 h-4 mr-2" />
+                                SEO Info
+                            </p>
                         </SheetTrigger>
                         <SheetContent>
                             <SheetHeader>
                                 <SheetTitle>SEO Info</SheetTitle>
                                 <SheetDescription></SheetDescription>
                             </SheetHeader>
-                            <div className="space-y-4 px-4 py-2">
+                            <form className="space-y-4 px-4 py-2">
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
                                         SEO Title
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    posts[0]?.seo_title || ""
-                                                );
-                                            }}
-                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <Clipboard className="w-4 h-4" />
-                                        </button>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            navigator.clipboard.writeText(
+                                                                posts[0]
+                                                                    ?.seo_title ||
+                                                                    ""
+                                                            );
+                                                        }}
+                                                        className="p-1 bg-gray-200 rounded hover:bg-gray-300"
+                                                    >
+                                                        <Clipboard className="w-4 h-4" />
+                                                    </button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    Copy to clipboard
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </label>
-                                    <input
-                                        type="text"
+                                    <textarea
                                         defaultValue={posts[0]?.seo_title}
-                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        readOnly
-                                    />
+                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-indigo-500 field-sizing-content"
+                                    ></textarea>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
                                         Meta Description
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    posts[0]
-                                                        ?.meta_description || ""
-                                                );
-                                            }}
-                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <Clipboard className="w-4 h-4 transition" />
-                                        </button>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            navigator.clipboard.writeText(
+                                                                posts[0]
+                                                                    ?.meta_description ||
+                                                                    ""
+                                                            );
+                                                        }}
+                                                        className="p-1 bg-gray-200 rounded hover:bg-gray-300"
+                                                    >
+                                                        <Clipboard className="w-4 h-4 transition" />
+                                                    </button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    Copy to clipboard
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </label>
                                     <textarea
                                         defaultValue={
                                             posts[0]?.meta_description
                                         }
                                         rows={3}
-                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 field-sizing-content"
-                                        readOnly
+                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-indigo-500 field-sizing-content"
                                     ></textarea>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
                                         Tags
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    posts[0]
-                                                        ?.meta_description || ""
-                                                );
-                                            }}
-                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <Clipboard className="w-4 h-4" />
-                                        </button>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            const tagsString =
+                                                                posts[0]?.tags.join(
+                                                                    " "
+                                                                ) || "";
+                                                            navigator.clipboard.writeText(
+                                                                tagsString
+                                                            );
+                                                        }}
+                                                        className="p-1 bg-gray-200 rounded hover:bg-gray-300"
+                                                    >
+                                                        <Clipboard className="w-4 h-4" />
+                                                    </button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    Copy to clipboard
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </label>
                                     <div className="flex flex-wrap gap-1">
                                         {posts[0]?.tags.map((tag) => (
                                             <Badge
                                                 variant={"outline"}
-                                                className="bg-purple-800 text-white border-gray-300"
+                                                className="bg-indigo-900 text-white border-gray-300"
                                                 key={tag}
                                             >
-                                                #{tag}
+                                                {tag}
                                             </Badge>
                                         ))}
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </SheetContent>
                     </Sheet>
 
                     <SubmitButton isChanged={isChanged} />
                     <Button
                         onClick={handleExport}
-                        className="w-40 bg-gradient-to-r from-amber-500 to-amber-900 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
+                        className="w-40 bg-gradient-to-r from-amber-700 to-amber-500 hover:from-amber-500 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
                     >
                         <Download className="w-5 h-5 mr-2" />
                         Export
