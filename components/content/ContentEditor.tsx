@@ -12,8 +12,17 @@ import { ForwardRefEditor } from "./forward-ref-editor";
 import { useFormStatus } from "react-dom";
 import { updatePostAction } from "@/actions/edit-actions";
 import { Button } from "../ui/button";
-import { Download, Edit2, Loader2 } from "lucide-react";
+import { Clipboard, Download, Edit2, Loader2 } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { Post } from "@/app/(logged-in)/posts/[id]/page";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 
 function SubmitButton({ isChanged }: { isChanged: boolean }) {
     const { pending } = useFormStatus();
@@ -137,7 +146,93 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                         Start editing your blog post below...
                     </p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 w-2xl sm:w-auto">
+                    <Sheet>
+                        <SheetTrigger className="bg-blue-900 text-white text-sm font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 ">
+                            SEO Info
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>SEO Info</SheetTitle>
+                                <SheetDescription></SheetDescription>
+                            </SheetHeader>
+                            <div className="space-y-4 px-4 py-2">
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
+                                        SEO Title
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    posts[0]?.seo_title || ""
+                                                );
+                                            }}
+                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <Clipboard className="w-4 h-4" />
+                                        </button>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        defaultValue={posts[0]?.seo_title}
+                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        readOnly
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
+                                        Meta Description
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    posts[0]
+                                                        ?.meta_description || ""
+                                                );
+                                            }}
+                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <Clipboard className="w-4 h-4 transition" />
+                                        </button>
+                                    </label>
+                                    <textarea
+                                        defaultValue={
+                                            posts[0]?.meta_description
+                                        }
+                                        rows={3}
+                                        className="text-sm border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 field-sizing-content"
+                                        readOnly
+                                    ></textarea>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold text-gray-700 flex justify-between items-center">
+                                        Tags
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    posts[0]
+                                                        ?.meta_description || ""
+                                                );
+                                            }}
+                                            className="p-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <Clipboard className="w-4 h-4" />
+                                        </button>
+                                    </label>
+                                    <div className="flex flex-wrap gap-1">
+                                        {posts[0]?.tags.map((tag) => (
+                                            <Badge
+                                                variant={"outline"}
+                                                className="bg-purple-800 text-white border-gray-300"
+                                                key={tag}
+                                            >
+                                                #{tag}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+
                     <SubmitButton isChanged={isChanged} />
                     <Button
                         onClick={handleExport}

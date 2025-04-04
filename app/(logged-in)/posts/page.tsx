@@ -14,7 +14,9 @@ export default async function Page() {
     }
 
     const sql = await getDbConnection();
-    const posts = await sql`SELECT * from posts where user_id = ${user.id}`;
+
+    const posts =
+        await sql`SELECT * from posts where user_id = ${user.id} ORDER BY created_at DESC`;
 
     return (
         <main className="mx-auto w-full max-w-6xl px-2.5 lg:px-0 mb-12 mt-8 md:mt-24">
@@ -47,12 +49,20 @@ export default async function Page() {
                             <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                                 {post.content.split("\n").slice(1).join("\n")}
                             </p>
-                            <Link
-                                href={`/posts/${post.id}`}
-                                className="text-purple-600 hover:text-purple-800 font-medium flex gap-1 items-center"
-                            >
-                                Read more <ArrowRight className="w-4 h-4" />
-                            </Link>
+                            <div className="flex justify-between items-center">
+                                {" "}
+                                <Link
+                                    href={`/posts/${post.id}`}
+                                    className="text-purple-600 hover:text-purple-800 font-medium flex gap-1 items-center"
+                                >
+                                    Read more <ArrowRight className="w-4 h-4" />
+                                </Link>
+                                <p className="text-gray-600 text-[13px] ">
+                                    {new Date(
+                                        post.created_at
+                                    ).toLocaleDateString()}
+                                </p>
+                            </div>
                         </div>
                     </BgGradient>
                 ))}

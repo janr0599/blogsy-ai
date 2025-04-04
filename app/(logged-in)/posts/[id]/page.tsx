@@ -8,6 +8,9 @@ export type Post = {
     content: string;
     title: string;
     id: string;
+    seo_title: string;
+    meta_description: string;
+    tags: string[];
 };
 
 export default async function PostsPage({
