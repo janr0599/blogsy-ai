@@ -109,6 +109,21 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
     const [content, setContent] = useState<string | null>(null);
     const [isChanged, setIsChanged] = useState(false);
 
+    //Track Sheet Component open state
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    useEffect(() => {
+        if (isSheetOpen) {
+            document.body.classList.add("overflow-hidden");
+        } else {
+            document.body.classList.remove("overflow-hidden");
+        }
+
+        return () => {
+            document.body.classList.remove("overflow-hidden");
+        };
+    }, [isSheetOpen]);
+
     // SEO Data State
     const [seoTitle, setSeoTitle] = useState(posts[0]?.seo_title || "");
     const [metaDescription, setMetaDescription] = useState(
@@ -221,14 +236,14 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                     </p>
                 </div>
                 <div className="flex gap-4">
-                    <Sheet>
+                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                         <SheetTrigger className="bg-transparent">
                             <p className="w-25 sm:w-40 bg-gradient-to-r from-blue-900 to-cyan-600 hover:from-blue-600 hover:to-cyan-900 text-white font-semibold rounded-full shadow-lg px-2 py-1.5 transform transition duration-200 ease-in-out hover:scale-105 flex items-center justify-center">
                                 <Globe className="w-4 h-4 mr-2 hidden sm:block" />
                                 SEO Data
                             </p>
                         </SheetTrigger>
-                        <SheetContent>
+                        <SheetContent className="overflow-y-auto max-h-screen px-4 py-2">
                             <SheetHeader>
                                 <SheetTitle>SEO Data</SheetTitle>
                                 <SheetDescription></SheetDescription>
@@ -272,6 +287,12 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                                                                     ?.seo_title ||
                                                                     ""
                                                             );
+                                                            toast(
+                                                                "Copied to clipboard",
+                                                                {
+                                                                    duration: 2000,
+                                                                }
+                                                            );
                                                         }}
                                                         className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                                                     >
@@ -307,10 +328,16 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                                                                     ?.meta_description ||
                                                                     ""
                                                             );
+                                                            toast(
+                                                                "Copied to clipboard",
+                                                                {
+                                                                    duration: 2000,
+                                                                }
+                                                            );
                                                         }}
                                                         className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                                                     >
-                                                        <Clipboard className="w-4 h-4 transition" />
+                                                        <Clipboard className="w-4 h-4" />
                                                     </button>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
@@ -344,6 +371,12 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                                                                 ) || "";
                                                             navigator.clipboard.writeText(
                                                                 tagsString
+                                                            );
+                                                            toast(
+                                                                "Copied to clipboard",
+                                                                {
+                                                                    duration: 2000,
+                                                                }
                                                             );
                                                         }}
                                                         className="p-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -424,7 +457,7 @@ export default function ContentEditor({ posts }: { posts: Post[] }) {
                     <SubmitButton isChanged={isChanged} />
                     <Button
                         onClick={handleExport}
-                        className="w-25 sm:40 bg-gradient-to-r from-amber-700 to-amber-500 hover:from-amber-500 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
+                        className="w-25 sm:w-40 bg-gradient-to-r from-amber-700 to-amber-500 hover:from-amber-500 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transform transition duration-200 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
                     >
                         <Download className="w-5 h-5 mr-2 hidden sm:block" />
                         Export
