@@ -42,12 +42,12 @@ const UploadFileButton = ({ pending }: { pending: boolean }) => {
             {pending ? (
                 <span className="flex items-center justify-center">
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />{" "}
-                    Converting...
+                    Generating...
                 </span>
             ) : (
                 <span className="flex items-center justify-center">
                     <UploadCloud className="w-5 h-5 mr-2" />
-                    Convert
+                    Generate
                 </span>
             )}
         </Button>
