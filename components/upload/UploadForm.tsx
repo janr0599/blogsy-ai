@@ -1,6 +1,6 @@
 "use client";
 
-import { boolean, z } from "zod";
+import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import {
     generateBlogPostAction,
     transcribeUploadedFile,
 } from "@/actions/upload-actions";
-import { useFormStatus } from "react-dom";
+// import { useFormStatus } from "react-dom";
 import { Loader2, UploadCloud } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
@@ -35,14 +35,14 @@ const schema = z.object({
         ),
 });
 
-const UploadFileButton = () => {
-    const { pending } = useFormStatus();
+const UploadFileButton = ({ pending }: { pending: boolean }) => {
+    // const { pending } = useFormStatus();
     return (
         <Button type="submit" className="bg-purple-600" disabled={pending}>
             {pending ? (
                 <span className="flex items-center justify-center">
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />{" "}
-                    Uploading...
+                    Converting...
                 </span>
             ) : (
                 <span className="flex items-center justify-center">
@@ -76,6 +76,7 @@ export default function UploadForm({
     });
 
     const [videoUrl, setVideoUrl] = useState("");
+    const [pending, setPending] = useState(false);
 
     const handleTranscribe = async (formData: FormData) => {
         const file = formData.get("file") as File;
@@ -94,31 +95,35 @@ export default function UploadForm({
             return;
         }
 
-        if (videoUrl.trim()) {
-            // Validate URL format
-            const urlPattern =
-                /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
-            if (!urlPattern.test(videoUrl)) {
-                toast.error("Invalid YouTube URL format.");
-                return;
-            }
+        setPending(true); // Set pending state to true
 
-            // Check URL posts limit
-            if (!isUnderLimit) {
-                toast.error(
-                    "You have reached the monthly limit for URL posts."
-                );
-                //reset form
-                setVideoUrl("");
-                return;
-            }
-            // Handle video URL
-            toast.info("🎙️ Transcription is in progress...", {
-                description:
-                    "Hang tight! Our digital wizards are sprinkling magic dust on your video URL! ✨",
-            });
+        try {
+            if (videoUrl.trim()) {
+                // Validate URL format
+                const urlPattern =
+                    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+                if (!urlPattern.test(videoUrl)) {
+                    toast.error("Invalid YouTube URL format.");
+                    setPending(false); // Reset pending state
+                    return;
+                }
 
-            try {
+                // Check URL posts limit
+                if (!isUnderLimit) {
+                    toast.error(
+                        "You have reached the monthly limit for URL posts."
+                    );
+                    setVideoUrl("");
+                    setPending(false); // Reset pending state
+                    return;
+                }
+
+                // Handle video URL
+                toast.info("🎙️ Transcription is in progress...", {
+                    description:
+                        "Hang tight! Our digital wizards are sprinkling magic dust on your video URL! ✨",
+                });
+
                 const response = await axios.get(
                     `/api/downloader?videoUrl=${encodeURIComponent(videoUrl)}`
                 );
@@ -134,53 +139,55 @@ export default function UploadForm({
                     },
                 ]);
 
-                handleTranscriptionResult(result);
-            } catch (error) {
-                console.error("Error processing video URL:", error);
-                toast.error("Failed to process video URL. Please try again.");
-            }
+                await handleTranscriptionResult(result);
+            } else if (file && file.size > 0) {
+                const validatedFields = schema.safeParse({ file });
 
-            return;
-        }
+                if (!validatedFields.success) {
+                    console.log(
+                        "validatedFields",
+                        validatedFields.error.flatten().fieldErrors
+                    );
+                    toast.error("Something went wrong", {
+                        description:
+                            validatedFields.error.flatten().fieldErrors
+                                .file?.[0] ?? "Invalid file",
+                    });
+                    setPending(false); // Reset pending state
+                    return;
+                }
 
-        if (file && file.size > 0) {
-            const validatedFields = schema.safeParse({ file });
+                // Handle file upload
+                const resp: any = await startUpload([file]);
+                console.log({ resp });
 
-            if (!validatedFields.success) {
-                console.log(
-                    "validatedFields",
-                    validatedFields.error.flatten().fieldErrors
-                );
-                toast.error("Something went wrong", {
+                if (!resp) {
+                    toast.error("Something went wrong", {
+                        description: "Please use a different file",
+                    });
+                    setPending(false); // Reset pending state
+                    return;
+                }
+
+                toast.info("🎙️ Transcription is in progress...", {
                     description:
-                        validatedFields.error.flatten().fieldErrors.file?.[0] ??
-                        "Invalid file",
+                        "Hang tight! Our digital wizards are sprinkling magic dust on your file! ✨",
                 });
-                return;
+
+                const result = await transcribeUploadedFile(resp);
+                await handleTranscriptionResult(result);
             }
-
-            // Handle file upload
-            const resp: any = await startUpload([file]);
-            console.log({ resp });
-
-            if (!resp) {
-                toast.error("Something went wrong", {
-                    description: "Please use a different file",
-                });
-                return;
-            }
-
-            toast.info("🎙️ Transcription is in progress...", {
-                description:
-                    "Hang tight! Our digital wizards are sprinkling magic dust on your file! ✨",
-            });
-
-            const result = await transcribeUploadedFile(resp);
-            handleTranscriptionResult(result);
+        } catch (error) {
+            console.error("Error during submission:", error);
+            toast.error("An error occurred. Please try again.");
+        } finally {
+            setTimeout(() => {
+                setPending(false); // Reset pending state after 2 seconds
+            }, 2000); // 2-second delay
         }
     };
 
-    const handleTranscriptionResult = (result: any) => {
+    const handleTranscriptionResult = async (result: any) => {
         const { data = null, message = null } = result || {};
 
         if (!result || (!data && !message)) {
@@ -196,31 +203,38 @@ export default function UploadForm({
                 description: "Please wait while we generate your blog post.",
             });
 
-            generateBlogPostAction({
+            const response = await generateBlogPostAction({
                 transcript: data.transcript
                     ? { text: data.transcript }
                     : { text: "" },
                 userId: data.userId,
                 source: videoUrl.trim() ? "url" : "file",
-            })
-                .then(() => {
-                    toast.success("🎉 Woohoo! Your AI blog is created! 🎊", {
-                        description:
-                            "Time to put on your editor hat, Click the post and edit it!",
-                    });
-                })
-                .catch((error: any) => {
-                    if (error.message.includes("timeout")) {
-                        toast.info("Taking longer than usual...");
-                    }
+            });
+
+            if (response.success) {
+                toast.success("🎉 Woohoo! Your AI blog is created! 🎊", {
+                    description:
+                        "Time to put on your editor hat, Click the post and edit it!",
                 });
+                setTimeout(() => {
+                    window.location.href = `/posts/${response.postId}`;
+                }, 2000); // 2-second delay
+            } else {
+                toast.error("Failed to generate the blog post.", {
+                    description: response.message,
+                });
+            }
         }
     };
 
     return (
         <form
             className="flex flex-col gap-6 w-auto sm:w-md"
-            action={handleTranscribe}
+            onSubmit={(e) => {
+                e.preventDefault(); // Prevent the default form submission behavior
+                const formData = new FormData(e.target as HTMLFormElement);
+                handleTranscribe(formData); // Call the handleTranscribe function
+            }}
         >
             <div className="flex flex-col gap-4 w-full">
                 <div className="w-full">
@@ -271,7 +285,7 @@ export default function UploadForm({
                         </TooltipProvider>
                     </div>
                 </div>
-                <UploadFileButton />
+                <UploadFileButton pending={pending} />
             </div>
         </form>
     );

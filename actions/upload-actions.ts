@@ -276,14 +276,15 @@ export async function generateBlogPostAction({
         }
     }
 
-    // //navigate
     if (postId) {
-        revalidatePath(`/posts/${postId}`);
-        redirect(`/posts/${postId}`);
+        return { success: true, postId };
     } else {
         console.error(
             "Post ID is invalid. The blog post might not have been saved correctly."
         );
-        // Optionally, return a response or display an error message
+        return {
+            success: false,
+            message: "Failed to save the blog post.",
+        };
     }
 }
