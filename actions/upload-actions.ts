@@ -11,13 +11,13 @@ const client = new AssemblyAI({
 
 export async function transcribeUploadedFile(
     resp: {
-        serverData: { userId: string; fileUrl: any };
+        serverData: { userId: string; fileUrl: string };
     }[]
 ) {
-    if (!resp) {
+    if (!resp || !resp[0]?.serverData?.fileUrl) {
         return {
             success: false,
-            message: "File upload failed",
+            message: "File upload or URL processing failed",
             data: null,
         };
     }
@@ -26,67 +26,48 @@ export async function transcribeUploadedFile(
         serverData: { userId, fileUrl },
     } = resp[0];
 
-    if (!fileUrl) {
-        return {
-            success: false,
-            message: "File upload failed",
-            data: null,
-        };
-    }
-
-    const response = await fetch(fileUrl);
-
     try {
-        const audioUrl = response.url;
+        // Check if the fileUrl is a valid URL
+        const isUrl =
+            fileUrl.startsWith("http://") || fileUrl.startsWith("https://");
+
+        const audioUrl = isUrl ? fileUrl : (await fetch(fileUrl)).url;
+        console.log("audioUrl", audioUrl);
 
         const config = {
             audio_url: audioUrl,
         };
 
-        const run = async () => {
-            const transcript = await client.transcripts.transcribe(config);
-            console.log(transcript.text);
-            return {
-                success: true,
-                message: "File uploaded successfully!",
-                data: { transcript: transcript.text, userId },
-            };
-        };
+        // Send the transcription request to AssemblyAI
+        const transcript = await client.transcripts.transcribe(config);
 
-        return await run();
+        // Log the full response for debugging
+        console.log("Full transcription response:", transcript);
+
+        if (!transcript || !transcript.text) {
+            throw new Error("Transcription failed or returned empty text.");
+        }
+
+        console.log("Transcription result:", transcript.text);
+
+        return {
+            success: true,
+            message: "File or URL processed successfully!",
+            data: { transcript: transcript.text, userId },
+        };
     } catch (error) {
-        console.error("Error processing file", error);
+        console.error("Error processing file or URL", error);
 
         return {
             success: false,
             message:
                 error instanceof Error
                     ? error.message
-                    : "Error processing file",
+                    : "Error processing file or URL",
             data: null,
         };
     }
 }
-
-// async function saveBlogPost(userId: string, title: string, content: string) {
-//     try {
-//         const sql = await getDbConnection();
-//         const result = await sql`
-//         INSERT INTO posts (user_id, title, content)
-//         VALUES (${userId}, ${title}, ${content})
-//         RETURNING id
-//       `;
-//         console.log("SQL insert result:", result);
-//         const [insertedPost] = result;
-//         if (!insertedPost) {
-//             throw new Error("No post returned from the database insertion");
-//         }
-//         return insertedPost.id;
-//     } catch (error) {
-//         console.error("Error saving blog post", error);
-//         throw error;
-//     }
-// }
 
 async function saveBlogPost(
     userId: string,
@@ -94,16 +75,17 @@ async function saveBlogPost(
     seoTitle: string,
     blogContent: string,
     metaDescription: string,
-    tags: string[]
+    tags: string[],
+    source: "file" | "url"
 ) {
     try {
         const sql = await getDbConnection();
         // If you’re using PostgreSQL, you might store the tags as a JSON array:
         const result = await sql`
-        INSERT INTO posts (user_id, title, seo_title, content, meta_description, tags)
+        INSERT INTO posts (user_id, title, seo_title, content, meta_description, tags, source)
         VALUES (${userId}, ${title}, ${seoTitle}, ${blogContent}, ${metaDescription}, ${JSON.stringify(
             tags
-        )})
+        )}, ${source})
         RETURNING id
       `;
         console.log("SQL insert result:", result);
@@ -242,11 +224,12 @@ async function generateSEOData(blogPostContent: string): Promise<{
 export async function generateBlogPostAction({
     transcript,
     userId,
+    source,
 }: {
     transcript: { text: string };
     userId: string;
+    source: "file" | "url";
 }) {
-    // const userPosts = [];
     const userPosts = await getLatestUserBlogPost(userId);
     let postId = null;
 
@@ -258,7 +241,8 @@ export async function generateBlogPostAction({
 
         console.log(blogPost);
 
-        if (!blogPost) {
+        if (!blogPost || blogPost.trim() === "") {
+            console.error("Generated blog post is empty or invalid.");
             return {
                 success: false,
                 message: "Blog post generation failed, please try again...",
@@ -278,6 +262,7 @@ export async function generateBlogPostAction({
         const { seoTitle, metaDescription, tags } = seoData;
 
         if (blogPost) {
+            console.log("Generated blog post:", blogPost);
             // Save blog post along with SEO data.
             postId = await saveBlogPost(
                 userId,
@@ -285,7 +270,8 @@ export async function generateBlogPostAction({
                 title,
                 blogPost,
                 metaDescription,
-                tags
+                tags,
+                source
             );
         }
     }

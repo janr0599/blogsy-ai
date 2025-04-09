@@ -43,6 +43,19 @@ export default async function Dashboard() {
     const posts = await sql`SELECT * FROM posts WHERE user_id = ${userId}`;
     console.log(posts.length);
 
+    const urlPosts = await sql`
+    SELECT * FROM posts
+    WHERE user_id = ${userId} 
+    AND source = 'url'
+    AND DATE_PART('year', created_at) = DATE_PART('year', CURRENT_DATE)
+    AND DATE_PART('month', created_at) = DATE_PART('month', CURRENT_DATE)
+`;
+    console.log("URL posts this month:", urlPosts.length);
+
+    const limit = isProPlan ? 5 : 0; // Set limit based on plan types
+    const isUnderLimit = urlPosts.length < limit; //
+    console.log(isUnderLimit);
+
     const isValidStarterPlan = isStarterPlan && posts.length < 3;
     const canUpload = isValidStarterPlan || isProPlan;
 
@@ -81,7 +94,11 @@ export default async function Dashboard() {
 
                     {canUpload ? (
                         <BgGradient>
-                            <UploadForm />
+                            <UploadForm
+                                userId={userId}
+                                isProPlan={isProPlan}
+                                isUnderLimit={isUnderLimit}
+                            />
                         </BgGradient>
                     ) : showUpgradePlan ? (
                         <UpgradeYourPlan />
