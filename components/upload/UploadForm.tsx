@@ -249,41 +249,16 @@ export default function UploadForm({
                     <label htmlFor="videoUrl" className="text-sm font-medium">
                         Or enter a video URL:
                     </label>
-                    <div className="relative group">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div className={"relative"}>
-                                        <Input
-                                            id="videoUrl"
-                                            name="videoUrl"
-                                            type="url"
-                                            placeholder="https://www.youtube.com/watch?v=8zL8VIYuGON&t=1s&ab_channel=TheAIContentCreator"
-                                            value={videoUrl}
-                                            onChange={(e) =>
-                                                setVideoUrl(e.target.value)
-                                            }
-                                            disabled={!isProPlan} // Disable if not Pro plan
-                                            className={`${
-                                                !isProPlan
-                                                    ? "bg-gray-200 opacity-50"
-                                                    : "border-gray-300"
-                                            } placeholder:text-gray-300`}
-                                        />
-                                    </div>
-                                </TooltipTrigger>
-                                {!isProPlan && (
-                                    <TooltipContent
-                                        side="top"
-                                        align="center"
-                                        className="bg-gray-800 text-white text-sm px-2 py-1 rounded shadow-md"
-                                    >
-                                        Upgrade to Pro to use this feature.
-                                    </TooltipContent>
-                                )}
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
+                    <Input
+                        id="videoUrl"
+                        name="videoUrl"
+                        type="url"
+                        placeholder="https://www.youtube.com/watch?v=8zL8VIYuGON&t=1s&ab_channel=TheAIContentCreator"
+                        value={videoUrl}
+                        onChange={(e) => setVideoUrl(e.target.value)}
+                        disabled={!isProPlan} // Disable if not Pro plan
+                        className="border-gray-300 placeholder:text-gray-300"
+                    />
                 </div>
                 <UploadFileButton pending={pending} />
             </div>

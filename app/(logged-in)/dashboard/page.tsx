@@ -52,7 +52,7 @@ export default async function Dashboard() {
 `;
     console.log("URL posts this month:", urlPosts.length);
 
-    const limit = isProPlan ? 5 : 0; // Set limit based on plan types
+    const limit = isProPlan ? 10 : 3; // Set limit based on plan types
     const isUnderLimit = urlPosts.length < limit; //
     console.log(isUnderLimit);
 
