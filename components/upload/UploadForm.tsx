@@ -9,16 +9,9 @@ import {
     generateBlogPostAction,
     transcribeUploadedFile,
 } from "@/actions/upload-actions";
-// import { useFormStatus } from "react-dom";
-import { Loader2, UploadCloud } from "lucide-react";
+import { Loader2, WandSparkles } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "../ui/tooltip";
 
 const schema = z.object({
     file: z
@@ -36,9 +29,12 @@ const schema = z.object({
 });
 
 const UploadFileButton = ({ pending }: { pending: boolean }) => {
-    // const { pending } = useFormStatus();
     return (
-        <Button type="submit" className="bg-purple-600" disabled={pending}>
+        <Button
+            type="submit"
+            className="bg-purple-600 hover:bg-purple-700"
+            disabled={pending}
+        >
             {pending ? (
                 <span className="flex items-center justify-center">
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />{" "}
@@ -46,7 +42,7 @@ const UploadFileButton = ({ pending }: { pending: boolean }) => {
                 </span>
             ) : (
                 <span className="flex items-center justify-center">
-                    <UploadCloud className="w-5 h-5 mr-2" />
+                    <WandSparkles className="w-5 h-5 mr-2" />
                     Generate
                 </span>
             )}
