@@ -36,6 +36,7 @@ export async function transcribeUploadedFile(
 
         const config = {
             audio_url: audioUrl,
+            language_detection: true,
         };
 
         // Send the transcription request to AssemblyAI
@@ -135,7 +136,7 @@ async function generateBlogPost({
                         text: `You are a skilled content writer that converts audio transcriptions into well-structured, engaging blog posts in Markdown format. Create a comprehensive blog post with a catchy title, introduction, main body with multiple sections, and a conclusion. Analyze the user's writing style from their previous posts and emulate their tone and style in the new post. Keep the tone casual and professional.
                     Here is the latest blog post for your reference:
                     ${userPosts}
-                    Please convert the following transcription into a well-structured blog post using Markdown formatting. Follow this structure:
+                    Please convert the following transcription into a well-structured blog post using Markdown formatting. Follow this structure even if the transcript is not in English or is not well structured:
                     1. Generate a dedicated SEO title that includes the focus keyword and eliminates unnecessary stop words.
                     2. Ensure the focus keyword appears in the first paragraph and in at least one additional subheading.
                     3. Integrate at least one relevant image placeholder text and include placeholders in brackets to related internal or external content. Make sure to make this bolds so user can tell them apart from the rest of the content.
@@ -149,13 +150,14 @@ async function generateBlogPost({
                     121. Include keywords related to the immigration industry and the topic of the transcript.
                     12. Emulate my writing style, tone, and any recurring patterns you notice from my previous posts.
                     Here's the transcription to convert: ${transcript}
-                    13. Avoid using backticks or the markdown word at the beginning or end of the generated content`,
+                    13. Avoid using backticks or the markdown word at the beginning or end of the generated content
+                    14. Make sure to finish the blogpost before running out of OutputTokens`,
                     },
                 ],
             },
         ],
         config: {
-            maxOutputTokens: 1500,
+            maxOutputTokens: 3000,
         },
     });
     // console.log(response.text);
