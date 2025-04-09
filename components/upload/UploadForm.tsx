@@ -252,7 +252,6 @@ export default function UploadForm({
                         placeholder="https://www.youtube.com/watch?v=8zL8VIYuGON&t=1s&ab_channel=TheAIContentCreator"
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
-                        disabled={!isProPlan} // Disable if not Pro plan
                         className="border-gray-300 placeholder:text-gray-300"
                     />
                 </div>
